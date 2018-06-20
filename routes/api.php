@@ -22,5 +22,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('user', 'UserController@getAuthUser');
     Route::post('photoupload', 'UploadfileController@uploadfile');
     Route::post('photouploadaccesorio', 'UploadfileController@uploadfile2');
+    Route::post('photouploadpedigree', 'UploadfileController@uploadfile3');
 });
 Route::post('auth/register', 'UserController@register');

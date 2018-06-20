@@ -55,4 +55,20 @@ class UploadfileController extends Controller
         );
          return response()->json(['archivo creado exitosamente' => $request]);
     }       
+
+    public function uploadfile3(Request $request){
+
+        $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
+            Storage::disk('local')->makeDirectory('pedigree/'.$user->id);
+            $imagennueva='';
+            $fecha=carbon::now('America/Bogota')->timestamp;
+            $aleatorio= rand ( 100 , 999 );
+            $imagennueva=$fecha.$aleatorio; 
+            $path = $request->file('file')->storeAs(
+            'pedigree/'.$user->id, $imagennueva
+        );
+         return response()->json(['suceess' => 'pedigree/'.$user->id.'/'.$imagennueva]);
+    }  
+
+
 }
