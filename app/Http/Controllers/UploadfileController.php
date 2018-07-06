@@ -69,6 +69,19 @@ class UploadfileController extends Controller
         );
          return response()->json(['suceess' => 'pedigree/'.$user->id.'/'.$imagennueva]);
     }  
+    public function fotochat(Request $request){
+
+        $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
+            Storage::disk('local')->makeDirectory('mensajes/'.$user->id);
+            $imagennueva='';
+            $fecha=carbon::now('America/Bogota')->timestamp;
+            $aleatorio= rand ( 100 , 999 );
+            $imagennueva=$fecha.$aleatorio; 
+            $path = $request->file('file')->storeAs(
+            'mensajes/'.$user->id, $imagennueva
+        );
+         return response()->json(['suceess' => 'mensajes/'.$user->id.'/'.$imagennueva]);
+    }  
 
 
 }

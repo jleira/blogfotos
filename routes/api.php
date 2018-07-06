@@ -23,5 +23,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('photoupload', 'UploadfileController@uploadfile');
     Route::post('photouploadaccesorio', 'UploadfileController@uploadfile2');
     Route::post('photouploadpedigree', 'UploadfileController@uploadfile3');
+    Route::post('fotochat', 'UploadfileController@fotochat');
+    
 });
 Route::post('auth/register', 'UserController@register');
