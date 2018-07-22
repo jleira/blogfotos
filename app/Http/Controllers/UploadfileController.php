@@ -82,6 +82,15 @@ class UploadfileController extends Controller
         );
          return response()->json(['suceess' => 'mensajes/'.$user->id.'/'.$imagennueva]);
     }  
-
-
+    public function fotousuario(Request $request){
+        $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));
+            Storage::disk('local')->makeDirectory($user->id);
+            $aleatorio= rand ( 11 , 99 );
+            $imagennueva='perfil'.$aleatorio;
+            $path = $request->file('file')->storeAs(
+            $user->id, $imagennueva
+        );
+        DB::table('users')->where('id',$user->id)->update(['img'=>$user->id.'/'.$imagennueva]);
+         return response()->json(['suceess' => $user->id.'/'.$imagennueva]);
+    }
 }
