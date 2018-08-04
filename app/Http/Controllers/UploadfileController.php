@@ -12,7 +12,7 @@ use Auth;
 use Storage;
 use DB;
 use Carbon\Carbon;
-
+use File;
 class UploadfileController extends Controller
 {
     private $user;
@@ -32,11 +32,62 @@ class UploadfileController extends Controller
                 $imagennueva=$fecha;                
             }
             DB::table('mascotas')->where('id',$request->id)->where('id_usuario',$user->id)->update(['imagenes'=>$imagennueva]);
-            $path = $request->file('file')->storeAs(
-            $user->id.'/'.$request->id, $fecha
-        );
+            
+            $image = $request->file;
+
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = str_random(10).'.'.'png';
+            echo storage_path();
+            File::put(storage_path(). '/app/' . $user->id.'/'.$request->id, base64_decode($image));
+            
+          return response()->json(['archivo creado exitosamente' => $request]);
+    }  
+    public function pruebab64(Request $request){
+
+        $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
+            Storage::disk('local')->makeDirectory($user->id.'/pruebafff'.$request->id);
+//            $imagen=DB::table('mascotas')->select('imagenes')->where('id',$request->id)->where('id_usuario',$user->id)->value('imagenes');
+            $imagennueva='';
+            $fecha=carbon::now('America/Bogota')->timestamp;
+/*                 if($imagen){
+                $imagennueva=$imagen.','.$fecha;
+            }else{
+                                
+            } */
+          //  DB::table('mascotas')->where('id',$request->id)->where('id_usuario',$user->id)->update(['imagenes'=>$imagennueva]);
+          $imagennueva=$fecha;
+          $image = $request->file;
+
+          $image = str_replace('data:image/png;base64,', '', $image);
+          $image = str_replace(' ', '+', $image);
+          $imageName = str_random(10).'.'.'png';
+          echo storage_path();
+          File::put(storage_path(). 'ap/' . 'prueba', base64_decode($image));
+         
+return "";  
+
+
          return response()->json(['archivo creado exitosamente' => $request]);
     }  
+    function base64_to_jpeg($base64_string,$output_file) {
+        // open the output file for writing
+        $ifp = fopen($output_file, 'wb' ); 
+    
+        // split the string on commas
+        // $data[ 0 ] == "data:image/png;base64"
+        // $data[ 1 ] == <actual base64 string>
+        $data = explode( ',', $base64_string );
+    
+        // we could add validation here with ensuring count( $data ) > 1
+        fwrite( $ifp, base64_decode( $data[ 1 ] ) );
+    
+        // clean up the file resource
+        fclose( $ifp ); 
+    
+        return $output_file; 
+    }
+
     public function uploadfile2(Request $request){
 
         $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
