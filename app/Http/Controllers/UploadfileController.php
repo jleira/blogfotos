@@ -34,19 +34,20 @@ class UploadfileController extends Controller
             DB::table('mascotas')->where('id',$request->id)->where('id_usuario',$user->id)->update(['imagenes'=>$imagennueva]);
             
             $image = $request->file;
-
             $image = str_replace('data:image/png;base64,', '', $image);
             $image = str_replace(' ', '+', $image);
-            $imageName = str_random(10).'.'.'png';
-            echo storage_path();
-            File::put(storage_path(). '/app/' . $user->id.'/'.$request->id, base64_decode($image));
+            $imageName = $fecha;
+
+            Storage::disk('local')->put($user->id.'/'.$request->id.'/'.$imageName, base64_decode($image));
+
             
-          return response()->json(['archivo creado exitosamente' => $request]);
+            
+         return response()->json(['archivo creado exitosamente' => $request]);
     }  
     public function pruebab64(Request $request){
 
         $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
-            Storage::disk('local')->makeDirectory($user->id.'/pruebafff'.$request->id);
+            Storage::disk('local')->makeDirectory($user->id.'/'.$request->id);
 //            $imagen=DB::table('mascotas')->select('imagenes')->where('id',$request->id)->where('id_usuario',$user->id)->value('imagenes');
             $imagennueva='';
             $fecha=carbon::now('America/Bogota')->timestamp;
@@ -61,12 +62,13 @@ class UploadfileController extends Controller
 
           $image = str_replace('data:image/png;base64,', '', $image);
           $image = str_replace(' ', '+', $image);
-          $imageName = str_random(10).'.'.'png';
-          echo storage_path();
-          File::put(storage_path(). 'ap/' . 'prueba', base64_decode($image));
-         
-return "";  
+          $imageName = str_random(10);
+          $rt= $user->id.'\\'.$request->id;
+          echo $rt;
+    
+          Storage::disk('local')->put($user->id.'/'.$request->id.'/'.$imageName, base64_decode($image));
 
+    //      Storage::put('10/10/juan', base64_decode($image));
 
          return response()->json(['archivo creado exitosamente' => $request]);
     }  
@@ -101,36 +103,51 @@ return "";
                 $imagennueva=$fecha;                
             }
             DB::table('productos')->where('id',$request->id)->where('usuario_id',$user->id)->update(['imagenes'=>$imagennueva]);
-            $path = $request->file('file')->storeAs(
-            'productos/'.$user->id.'/'.$request->id, $fecha
-        );
-         return response()->json(['archivo creado exitosamente' => $request]);
+
+
+            $image = $request->file;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = $fecha;
+
+            Storage::disk('local')->put('productos/'.$user->id.'/'.$request->id.'/'.$imageName, base64_decode($image));
+            return response()->json(['archivo creado exitosamente' => $request]);
     }       
 
     public function uploadfile3(Request $request){
 
+        //
         $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
             Storage::disk('local')->makeDirectory('pedigree/'.$user->id);
             $imagennueva='';
             $fecha=carbon::now('America/Bogota')->timestamp;
             $aleatorio= rand ( 100 , 999 );
-            $imagennueva=$fecha.$aleatorio; 
-            $path = $request->file('file')->storeAs(
-            'pedigree/'.$user->id, $imagennueva
-        );
+            $imagennueva=$fecha.$aleatorio;
+              
+            $image = $request->file;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = $imagennueva;
+            Storage::disk('local')->put('pedigree/'.$user->id.'/'.$imageName, base64_decode($image));
+
          return response()->json(['suceess' => 'pedigree/'.$user->id.'/'.$imagennueva]);
     }  
-    public function fotochat(Request $request){
-
+    public function fotochat(Request $request){ 
         $user = JWTAuth::toUser(str_replace('Bearer ','',$request->header('Authorization')));        
             Storage::disk('local')->makeDirectory('mensajes/'.$user->id);
             $imagennueva='';
             $fecha=carbon::now('America/Bogota')->timestamp;
             $aleatorio= rand ( 100 , 999 );
             $imagennueva=$fecha.$aleatorio; 
-            $path = $request->file('file')->storeAs(
-            'mensajes/'.$user->id, $imagennueva
-        );
+
+
+            $image = $request->file;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = $imagennueva;
+            Storage::disk('local')->put('mensajes/'.$user->id.'/'.$imageName, base64_decode($image));
+
+
          return response()->json(['suceess' => 'mensajes/'.$user->id.'/'.$imagennueva]);
     }  
     public function fotousuario(Request $request){
@@ -138,10 +155,16 @@ return "";
             Storage::disk('local')->makeDirectory($user->id);
             $aleatorio= rand ( 11 , 99 );
             $imagennueva='perfil'.$aleatorio;
-            $path = $request->file('file')->storeAs(
-            $user->id, $imagennueva
-        );
-        DB::table('users')->where('id',$user->id)->update(['img'=>$user->id.'/'.$imagennueva]);
+  
+            
+            $image = $request->file;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = $imagennueva;
+
+            Storage::disk('local')->put($user->id.'/'.$imageName, base64_decode($image));
+     
+            DB::table('users')->where('id',$user->id)->update(['img'=>$user->id.'/'.$imagennueva]);
          return response()->json(['suceess' => $user->id.'/'.$imagennueva]);
     }
 }
