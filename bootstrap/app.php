@@ -41,6 +41,10 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->middleware([
+    'CorsMiddleware' => App\Http\Middleware\CorsMiddleware::class
+]);
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
